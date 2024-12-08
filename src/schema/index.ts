@@ -1,6 +1,10 @@
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql"
 import { GET_ALL_GUESTS, GET_GUEST_BY_ID } from "./queries/guestsQueries"
-import { CREATE_GUEST, DELETE_GUEST } from "./mutations/guestsMutations"
+import {
+	CREATE_GUEST,
+	DELETE_GUEST,
+	UPDATE_GUEST,
+} from "./mutations/guestsMutations"
 import { LOGIN_USER } from "./mutations/loginMutation"
 
 /**
@@ -57,6 +61,13 @@ const Mutation = new GraphQLObjectType({
 		 * @see {CREATE_GUEST}
 		 */
 		createGuest: CREATE_GUEST,
+
+		/**
+		 * Create a new guest in the database.
+		 * @type {Object}
+		 * @see {CREATE_GUEST}
+		 */
+		updateGuest: UPDATE_GUEST,
 
 		/**
 		 * Delete a guest from the database.

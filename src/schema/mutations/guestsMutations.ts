@@ -46,6 +46,73 @@ export const CREATE_GUEST = {
 }
 
 /**
+ * Mutation for updating a guest.
+ *
+ * This mutation allows updating a guest's information in the database.
+ * Only the fields provided in the input arguments will be updated, and the rest will remain unchanged.
+ *
+ * @type {Object}
+ */
+export const UPDATE_GUEST = {
+	type: GuestType, // The type of data returned after the update (GuestType)
+	args: {
+		id: { type: GraphQLID }, // The unique identifier of the guest to update
+		first_name: { type: GraphQLString }, // The updated first name of the guest (optional)
+		middle_name: { type: GraphQLString }, // The updated middle name of the guest (optional)
+		last_name: { type: GraphQLString }, // The updated last name of the guest (optional)
+		phone_number: { type: GraphQLString }, // The updated phone number of the guest (optional)
+		assist: { type: GraphQLBoolean }, // Whether the guest will assist (optional)
+		answer_invitation: { type: GraphQLBoolean }, // Whether the guest answered the invitation (optional)
+		saw_invitation: { type: GraphQLBoolean }, // Whether the guest saw the invitation (optional)
+		answer_sd: { type: GraphQLBoolean }, // Whether the guest answered the "save the date" (optional)
+		saw_sd: { type: GraphQLBoolean }, // Whether the guest saw the "save the date" (optional)
+		updated_by: { type: GraphQLString }, // The ID of the user making the update (optional)
+	},
+
+	/**
+	 * Resolver function for updating a guest.
+	 *
+	 * @param {any} _ - Unused parameter.
+	 * @param {Object} args - The arguments passed to the mutation.
+	 * @param {string} args.id - The unique identifier of the guest to update.
+	 * @param {string} [args.first_name] - The updated first name of the guest (optional).
+	 * @param {string} [args.middle_name] - The updated middle name of the guest (optional).
+	 * @param {string} [args.last_name] - The updated last name of the guest (optional).
+	 * @param {string} [args.phone_number] - The updated phone number of the guest (optional).
+	 * @param {boolean} [args.assist] - Whether the guest will assist (optional).
+	 * @param {boolean} [args.answer_invitation] - Whether the guest answered the invitation (optional).
+	 * @param {boolean} [args.saw_invitation] - Whether the guest saw the invitation (optional).
+	 * @param {boolean} [args.answer_sd] - Whether the guest answered the "save the date" (optional).
+	 * @param {boolean} [args.saw_sd] - Whether the guest saw the "save the date" (optional).
+	 * @param {string} [args.updated_by] - The ID of the user making the update (optional).
+	 * @param {Object} context - The context object containing user authentication.
+	 * @returns {Promise<Guest>} - The updated guest object.
+	 * @throws {Error} - Throws an error if the user is not authenticated.
+	 */
+	resolve: async (_: any, args: any, context: any) => {
+		if (!context.user) {
+			throw new Error("Unauthorized. Authentication is required.")
+		}
+
+		const { id, ...updateFields } = args
+
+		// Remove undefined fields (optional)
+		Object.keys(updateFields).forEach((key) => {
+			if (updateFields[key] === undefined) {
+				delete updateFields[key]
+			}
+		})
+
+		// Update only the fields that are provided
+		const updatedGuest = await Guest.findByIdAndUpdate(id, updateFields, {
+			new: true,
+		})
+
+		return updatedGuest
+	},
+}
+
+/**
  * Mutation for deleting a guest.
  * @type {Object}
  */
