@@ -128,7 +128,7 @@ export const GuestType = new GraphQLObjectType({
 		 * The timestamp of when the guest record was last updated.
 		 * @type {GraphQLString}
 		 */
-		updatedAt: { type: GraphQLString },
+		updated_at: { type: GraphQLString },
 	}),
 })
 

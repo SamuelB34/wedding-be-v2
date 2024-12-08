@@ -76,6 +76,12 @@ export interface GuestType {
 	 * The ID of the user who created the guest record.
 	 * @type {string}
 	 */
+	created_at: Date
+
+	/**
+	 * The ID of the user who created the guest record.
+	 * @type {string}
+	 */
 	created_by: string
 
 	/**
@@ -89,6 +95,12 @@ export interface GuestType {
 	 * @type {string}
 	 */
 	deleted_by?: string
+
+	/**
+	 * The timestamp when the guest record was deleted (optional).
+	 * @type {Date}
+	 */
+	updated_at?: Date
 
 	/**
 	 * The timestamp when the guest record was deleted (optional).
@@ -195,11 +207,23 @@ const guestsSchema = new Schema<GuestType>(
 		deleted_at: { type: Date },
 
 		/**
+		 * The ID of the user who last created the guest record (optional).
+		 * @type {String}
+		 */
+		created_at: { type: Date },
+
+		/**
 		 * The ID of the user who created the guest record.
 		 * @type {String}
 		 * @required
 		 */
 		created_by: { type: String, required: true },
+
+		/**
+		 * The ID of the user who last updated the guest record (optional).
+		 * @type {String}
+		 */
+		updated_at: { type: Date },
 
 		/**
 		 * The ID of the user who last updated the guest record (optional).
@@ -212,7 +236,7 @@ const guestsSchema = new Schema<GuestType>(
 		 * Enables automatic creation of createdAt and updatedAt fields.
 		 * @type {Object}
 		 */
-		timestamps: true,
+		timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
 	}
 )
 

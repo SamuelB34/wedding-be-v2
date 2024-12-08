@@ -37,6 +37,8 @@ export const CREATE_GUEST = {
 		// Logic for creating a new guest
 		const guest = new Guest({
 			...args, // Spread the provided arguments into the new guest object
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString(),
 			created_by: context.user.id, // Set the 'created_by' field to the authenticated user's ID
 		})
 
@@ -94,13 +96,18 @@ export const UPDATE_GUEST = {
 			throw new Error("Unauthorized. Authentication is required.")
 		}
 
-		const { id, ...updateFields } = args
+		let { id, ...updateFields } = args
 
 		// Remove undefined fields (optional)
 		Object.keys(updateFields).forEach((key) => {
 			if (updateFields[key] === undefined) {
 				delete updateFields[key]
 			}
+		})
+
+		updateFields = Object.assign(updateFields, {
+			updated_at: new Date().toISOString(),
+			updated_by: context.user.id,
 		})
 
 		// Update only the fields that are provided
@@ -113,24 +120,24 @@ export const UPDATE_GUEST = {
 }
 
 /**
- * Mutation for deleting a guest.
+ * Mutation for soft-deleting a guest by setting a `deleted_at` timestamp.
  * @type {Object}
  */
 export const DELETE_GUEST = {
-	type: GuestType, // The mutation returns the deleted guest object
+	type: GuestType, // The mutation returns the updated guest object
 	args: {
 		/**
-		 * The ID of the guest to be deleted.
+		 * The ID of the guest to be soft-deleted.
 		 * @type {string}
 		 */
 		id: { type: GraphQLID },
 	},
 	/**
-	 * Resolver function for deleting a guest.
+	 * Resolver function for soft-deleting a guest.
 	 * @param {any} _ - Unused parameter.
 	 * @param {Object} id - The guest ID passed to the mutation.
 	 * @param {Object} context - The context object containing user authentication.
-	 * @returns {Promise<Guest>} - The deleted guest object.
+	 * @returns {Promise<Guest>} - The updated guest object with the `deleted_at` field set.
 	 * @throws {Error} - Throws an error if the user is not authenticated.
 	 */
 	resolve: async (_: any, { id }: any, context: any) => {
@@ -139,7 +146,17 @@ export const DELETE_GUEST = {
 			throw new Error("Unauthorized. Authentication is required.")
 		}
 
-		// Logic for deleting the guest by ID
-		return await Guest.findByIdAndDelete(id) // Delete the guest by the provided ID
+		// Set the `deleted_at` timestamp
+		const deletedGuest = await Guest.findOneAndUpdate(
+			{ _id: id, deleted_at: null },
+			{
+				deleted_at: new Date().toISOString(),
+				updated_at: new Date().toISOString(),
+			},
+			{ new: true } // Return the updated document
+		)
+
+		// Return the updated guest object
+		return deletedGuest
 	},
 }

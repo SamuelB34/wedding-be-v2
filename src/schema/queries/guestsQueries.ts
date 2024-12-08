@@ -122,7 +122,9 @@ export const GET_ALL_GUESTS = {
 		const trimmedSearch = search.trim()
 
 		const searchQuery: any = {
-			$and: [],
+			$and: [
+				{ deleted_at: { $exists: false } }, // Filter out guests with `deleted_at` set
+			],
 		}
 
 		if (trimmedSearch) {
@@ -211,6 +213,6 @@ export const GET_GUEST_BY_ID: any = {
 	 */
 	resolve: async (_: unknown, args: { id: string }) => {
 		// Retrieve and return the guest by ID
-		return await Guest.findById(args.id)
+		return await Guest.findOne({ _id: args.id, deleted_at: null })
 	},
 }

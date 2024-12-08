@@ -6,6 +6,8 @@ import {
 	UPDATE_GUEST,
 } from "./mutations/guestsMutations"
 import { LOGIN_USER } from "./mutations/loginMutation"
+import { GET_ALL_GROUPS } from "./queries/groupsQueries"
+import { CREATE_GROUP, UPDATE_GROUP } from "./mutations/groupsMutations"
 
 /**
  * Root query type that defines the available query operations.
@@ -29,6 +31,13 @@ const RootQuery = new GraphQLObjectType({
 		 * @see {GET_ALL_GUESTS}
 		 */
 		getAllGuests: GET_ALL_GUESTS,
+
+		/**
+		 * Fetch all groups from the database.
+		 * @type {Object}
+		 * @see {GET_ALL_GROUPS}
+		 */
+		getAllGroups: GET_ALL_GROUPS,
 
 		/**
 		 * Fetch a single guest by ID from the database.
@@ -63,7 +72,7 @@ const Mutation = new GraphQLObjectType({
 		createGuest: CREATE_GUEST,
 
 		/**
-		 * Create a new guest in the database.
+		 * Update a guest in the database.
 		 * @type {Object}
 		 * @see {CREATE_GUEST}
 		 */
@@ -75,6 +84,20 @@ const Mutation = new GraphQLObjectType({
 		 * @see {DELETE_GUEST}
 		 */
 		deleteGuest: DELETE_GUEST,
+
+		/**
+		 * Create a new group in the database.
+		 * @type {Object}
+		 * @see {CREATE_GROUP}
+		 */
+		createGroup: CREATE_GROUP,
+
+		/**
+		 * Update a group in the database.
+		 * @type {Object}
+		 * @see {UPDATE_GROUP}
+		 */
+		updateGroup: UPDATE_GROUP,
 
 		/**
 		 * Authenticate a user and return a JWT token.
