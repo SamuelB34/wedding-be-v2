@@ -35,7 +35,7 @@ export const GuestType = new GraphQLObjectType({
 		first_name: { type: GraphQLString },
 
 		/**
-		 * The middle name of the guest.
+		 * The middle name of the guest (optional).
 		 * @type {GraphQLString}
 		 */
 		middle_name: { type: GraphQLString },
@@ -45,12 +45,6 @@ export const GuestType = new GraphQLObjectType({
 		 * @type {GraphQLString}
 		 */
 		last_name: { type: GraphQLString },
-
-		/**
-		 * The full name of the guest, typically combining first and last name.
-		 * @type {GraphQLString}
-		 */
-		full_name: { type: GraphQLString },
 
 		/**
 		 * The phone number of the guest.
@@ -68,7 +62,7 @@ export const GuestType = new GraphQLObjectType({
 		 * Whether the guest has responded to the invitation.
 		 * @type {GraphQLBoolean}
 		 */
-		answer: { type: GraphQLBoolean },
+		answer_invitation: { type: GraphQLBoolean },
 
 		/**
 		 * Whether the guest has seen the invitation.
@@ -77,13 +71,25 @@ export const GuestType = new GraphQLObjectType({
 		saw_invitation: { type: GraphQLBoolean },
 
 		/**
-		 * The ID of the group the guest belongs to.
+		 * Whether the guest has answered the SD.
+		 * @type {GraphQLBoolean}
+		 */
+		answer_sd: { type: GraphQLBoolean },
+
+		/**
+		 * Whether the guest has seen the SD.
+		 * @type {GraphQLBoolean}
+		 */
+		saw_sd: { type: GraphQLBoolean },
+
+		/**
+		 * The ID of the group the guest belongs to (reference to Groups).
 		 * @type {GraphQLID}
 		 */
 		group: { type: GraphQLID },
 
 		/**
-		 * The ID of the table assigned to the guest.
+		 * The ID of the table assigned to the guest (reference to Tables).
 		 * @type {GraphQLID}
 		 */
 		table: { type: GraphQLID },
@@ -125,3 +131,55 @@ export const GuestType = new GraphQLObjectType({
 		updatedAt: { type: GraphQLString },
 	}),
 })
+
+/**
+ * Mongoose schema and model definition for a Guest.
+ * @type {Schema}
+ * @description Represents a guest record with associated details, including attendance, invitation status, and timestamps.
+ */
+import mongoose, { Schema, model } from "mongoose"
+
+export interface GuestType {
+	first_name: string
+	middle_name?: string
+	last_name: string
+	phone_number: string
+	assist: boolean
+	answer_invitation: boolean
+	saw_invitation: boolean
+	answer_sd: boolean
+	saw_sd: boolean
+	group?: string // ID of the related Group
+	table?: string // ID of the related Table
+	created_by: string
+	updated_by?: string
+	deleted_by?: string
+	deleted_at?: Date
+}
+
+const guestsSchema = new Schema<GuestType>(
+	{
+		first_name: { type: String, required: true },
+		middle_name: { type: String },
+		last_name: { type: String, required: true },
+		phone_number: { type: String, required: true },
+		assist: { type: Boolean, required: true },
+		answer_invitation: { type: Boolean, required: true, default: false },
+		saw_invitation: { type: Boolean, required: true },
+		answer_sd: { type: Boolean, required: true, default: false },
+		saw_sd: { type: Boolean, required: true },
+		group: { type: Schema.Types.ObjectId, ref: "Groups" },
+		table: { type: Schema.Types.ObjectId, ref: "Tables" },
+		deleted_by: { type: String },
+		deleted_at: { type: Date },
+		created_by: { type: String, required: true },
+		updated_by: { type: String },
+	},
+	{
+		timestamps: true,
+	}
+)
+
+const Guest = model<GuestType>("Guest", guestsSchema)
+
+export default Guest

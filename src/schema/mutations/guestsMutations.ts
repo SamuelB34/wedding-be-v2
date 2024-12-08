@@ -1,4 +1,3 @@
-// schema/mutations/guestMutations.ts
 import { GraphQLString, GraphQLBoolean, GraphQLID } from "graphql"
 import { GuestType } from "../GuestType"
 import Guest from "../../models/guests"
@@ -15,8 +14,10 @@ export const CREATE_GUEST = {
 		last_name: { type: GraphQLString },
 		phone_number: { type: GraphQLString },
 		assist: { type: GraphQLBoolean },
-		answer: { type: GraphQLBoolean },
+		answer_invitation: { type: GraphQLBoolean },
 		saw_invitation: { type: GraphQLBoolean },
+		answer_sd: { type: GraphQLBoolean },
+		saw_sd: { type: GraphQLBoolean },
 		created_by: { type: GraphQLString },
 	},
 	/**

@@ -40,9 +40,7 @@ export const LOGIN_USER = {
 		}
 
 		// Generate the JWT token (JWT_SECRET should be stored in your .env file)
-		const token = jwt.sign(payload, process.env.JWT_SECRET || "secret", {
-			expiresIn: "1h", // The token expires in 1 hour
-		})
+		const token = jwt.sign(payload, process.env.JWT_SECRET || "secret")
 
 		// Return the generated JWT token
 		return token
