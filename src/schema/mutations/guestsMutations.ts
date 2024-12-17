@@ -1,6 +1,11 @@
 import { GraphQLString, GraphQLBoolean, GraphQLID } from "graphql"
 import { GuestType } from "../GuestType"
 import Guest from "../../models/guests"
+import {
+	publishGuestAdded,
+	publishGuestDeleted,
+	publishGuestUpdated,
+} from "../subscription/guestsSubscription"
 
 /**
  * Mutation for creating a new guest.
@@ -43,7 +48,11 @@ export const CREATE_GUEST = {
 		})
 
 		// Save the guest to the database and return the created guest
-		return await guest.save()
+		const savedGuest = await guest.save()
+
+		publishGuestAdded(savedGuest)
+
+		return savedGuest
 	},
 }
 
@@ -115,6 +124,8 @@ export const UPDATE_GUEST = {
 			new: true,
 		})
 
+		publishGuestUpdated(updatedGuest)
+
 		return updatedGuest
 	},
 }
@@ -155,6 +166,8 @@ export const DELETE_GUEST = {
 			},
 			{ new: true } // Return the updated document
 		)
+
+		publishGuestDeleted(deletedGuest)
 
 		// Return the updated guest object
 		return deletedGuest

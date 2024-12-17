@@ -8,6 +8,7 @@ import {
 import { LOGIN_USER } from "./mutations/loginMutation"
 import { GET_ALL_GROUPS } from "./queries/groupsQueries"
 import { CREATE_GROUP, UPDATE_GROUP } from "./mutations/groupsMutations"
+import { GuestSubscription } from "./subscription/guestsSubscription"
 
 /**
  * Root query type that defines the available query operations.
@@ -124,4 +125,6 @@ export const schema = new GraphQLSchema({
 	 * @type {GraphQLObjectType}
 	 */
 	mutation: Mutation,
+
+	subscription: GuestSubscription,
 })

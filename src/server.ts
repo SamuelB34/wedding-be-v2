@@ -7,7 +7,7 @@ import "tsconfig-paths/register"
 //For env File
 dotenv.config({ path: path.join(__dirname, ".env") })
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 4000
 const host = process.env.SERVER_HOST ?? "0.0.0.0"
 
 app.listen(port, () => {
